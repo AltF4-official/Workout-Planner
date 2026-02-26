@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workout Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Particle background -->
+  <canvas id="canvas"></canvas>
+
+  <!-- Click ripple layer -->
+  <div id="ripple-container"></div>
+
+  <!-- Confetti canvas layer -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="wrap">
+
+    <!-- ── Header ─────────────────────────────────────────── -->
+    <header>
+      <div class="eyebrow">Strength &amp; Conditioning</div>
+      <h1>Workout<br>Planner</h1>
+      <div class="header-divider"></div>
+      <!-- Streak counter rendered by JS -->
+      <div id="streak-display" class="streak-display" style="display:none"></div>
+    </header>
+
+    <!-- ── Stats Bar ──────────────────────────────────────── -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="s-progress">0/0</div>
+        <div class="stat-lbl">Exercises</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="s-cals">0</div>
+        <div class="stat-lbl">Kcal Burned</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="s-pct">0%</div>
+        <div class="stat-lbl">Progress</div>
+      </div>
+    </div>
+
+    <!-- ── Day Cards (rendered by JS) ────────────────────── -->
+    <div class="days" id="days-container"></div>
+
+  </div><!-- /wrap -->
+
+  <!-- ── Timer Widget ───────────────────────────────────── -->
+  <div class="timer-wrap" id="timerWidget">
+    <div class="timer-svg-wrap" id="timerSvgWrap">
+      <svg viewBox="0 0 160 160" width="160" height="160">
+        <!-- Track -->
+        <circle cx="80" cy="80" r="68"
+          fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="5.5"/>
+        <!-- Progress Arc -->
+        <circle id="timerArc" cx="80" cy="80" r="68"
+          fill="none" stroke="#FF4D00" stroke-width="5.5"
+          stroke-linecap="round"
+          stroke-dasharray="427.26 427.26"
+          transform="rotate(-90 80 80)"/>
+        <!-- Inner bg -->
+        <circle cx="80" cy="80" r="58" fill="rgba(7,9,14,0.97)"/>
+      </svg>
+      <div class="timer-inner">
+        <div id="timerTime">30:00</div>
+        <div class="timer-status" id="timerStatus">READY</div>
+        <div class="timer-btns">
+          <button class="tbtn tbtn-play" id="timerPlayBtn" title="Play / Pause">
+            <svg id="playIcon" width="11" height="13" viewBox="0 0 11 13" fill="currentColor">
+              <path d="M0.5 1.5L10 6.5L0.5 11.5V1.5Z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
+            </svg>
+            <svg id="pauseIcon" width="11" height="13" viewBox="0 0 11 13" fill="currentColor" style="display:none">
+              <rect x="0.5" y="1" width="3.5" height="11" rx="1"/>
+              <rect x="7" y="1" width="3.5" height="11" rx="1"/>
+            </svg>
+          </button>
+          <button class="tbtn tbtn-reset" id="timerResetBtn" title="Reset">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 7A6 6 0 1 0 7 1"/>
+              <polyline points="1,1 1,5 5,5"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Rest mode label shown beneath timer when auto-triggered -->
+    <div class="timer-label" id="timerLabel">WORKOUT TIMER</div>
+  </div>
+
+  <!-- ── Week Summary Modal ─────────────────────────────── -->
+  <div class="modal-bg" id="weekModal">
+    <div class="modal">
+      <div class="modal-icon">🏁</div>
+      <h2>Week Summary</h2>
+      <p class="modal-msg" id="m-msg">Great work this week.</p>
+
+      <div class="modal-stats">
+        <div class="modal-stat modal-stat-accent">
+          <div class="modal-stat-num" id="m-days">0/4</div>
+          <div class="modal-stat-lbl">Days Done</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-num" id="m-exer">0</div>
+          <div class="modal-stat-lbl">Exercises</div>
+        </div>
+        <div class="modal-stat modal-stat-cals">
+          <div class="modal-stat-num" id="m-cals">0</div>
+          <div class="modal-stat-lbl">Kcal Burned</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-num" id="m-skipped">0</div>
+          <div class="modal-stat-lbl">Skipped</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-num" id="m-pct">0%</div>
+          <div class="modal-stat-lbl">Completion</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-num" id="m-rounds">0</div>
+          <div class="modal-stat-lbl">Rounds Done</div>
+        </div>
+      </div>
+
+      <!-- Previous week comparison -->
+      <div class="prev-week-row" id="prevWeekRow" style="display:none">
+        <span class="pw-label">vs last week</span>
+        <span class="pw-delta" id="pw-delta"></span>
+      </div>
+
+      <!-- 8-Week Progress Chart -->
+      <div class="week-chart-wrap" id="weekChartWrap">
+        <div class="week-chart-title">8-Week Completion History</div>
+        <canvas id="weekChart" class="week-chart"></canvas>
+      </div>
+
+      <button class="btn-primary" id="newWeekBtn">Start New Week →</button>
+      <div class="modal-hint">All progress will be saved to history</div>
+    </div>
+  </div>
+
+  <!-- ── Reset Data Modal ─────────────────────────────── -->
+  <div class="modal-bg" id="resetModal">
+    <div class="modal">
+      <div class="modal-icon">⚠️</div>
+      <h2>Reset Data</h2>
+      <p class="modal-msg">Are you sure you want to reset all data? This will delete all progress and settings.</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="resetCancel">Cancel</button>
+        <button class="btn-primary" id="resetConfirm">Yes, Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
