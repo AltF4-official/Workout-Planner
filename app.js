@@ -1608,11 +1608,11 @@ function forceEndWeek() {
 
   const msgs = [
     [100, '🔥 Perfect week. Absolute beast mode.'],
-    [80,  '💪 Strong week. Nearly flawless.'],
-    [60,  '👊 Solid effort. Keep pushing.'],
-    [30,  '⚡ Every rep counts. Build the habit.'],
-    [1,   '😤 Tough week. Come back stronger.'],
-    [0,   '💀 Zero reps. Time to get serious.'],
+    [80,  'Strong week. Nearly flawless.'],
+    [60,  'Mid'],
+    [30,  '⚡ Every rep counts. Keep going'],
+    [1,   'Bad.'],
+    [0,   '💀 Zero reps. You suck.'],
   ];
   const msg = msgs.find(([threshold]) => pct >= threshold);
   document.getElementById('m-msg').textContent = msg[1];
