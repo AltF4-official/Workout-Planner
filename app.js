@@ -1692,7 +1692,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('keydown', evt => {
     if (evt.key === 'e' || evt.key === 'E') forceEndWeek();
-    if (evt.key === '.') {
+    if (evt.key === 'g' || evt.key === 'G') {
       document.getElementById('resetModal').classList.add('show');
     }
   });
