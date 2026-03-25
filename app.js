@@ -2,33 +2,48 @@
    CALORIE DATA  (kcal per set/exercise · ~70 kg person, moderate effort)
 ══════════════════════════════════════════════════════════════ */
 const CALS = {
-  'Arm circles – 1 min':              3,
-  'Bodyweight squats – 2 × 12':       8,
-  'Light push-ups – 2 × 8':           5,
-  'Pull-ups – 5–8':                   10,
-  'Pull-ups – 6–10':                  12,
-  'Dumbbell curls – 10–12':           6,
-  'Push-ups – 10':                    6,
-  'Plank – 40 sec':                   3,
-  'Rest 45 sec':                      0,
-  'Rest 40 sec':                      0,
-  'Rest 30 sec':                      0,
-  'Wall sit – 3 × 45 sec':            8,
-  'Dumbbell floor press – 10–12':     8,
-  'Bicep curls – 10–12':              6,
-  'Pike push-ups – 8–10':             7,
-  'Slow push-ups – max reps × 2 sets':10,
-  'Goblet squats – 12':               9,
-  'Goblet squats – 15':              10,
-  'Knee push-ups – 12':               5,
-  'Hanging knee raises – 12–15':      8,
-  'Side plank – 30 sec each side':    4,
-  'Dead hang from pull-up bar – 3 × 30 sec': 4,
-  'Dumbbell shoulder press – 10–12':  9,
-  'Hanging leg raises – 12–15':       9,
-  'Bicep curls burnout set':          8,
-  'Immediately → push-ups max':      12,
-  'Repeat once':                      0,
+  // ── Shared warm-up ──────────────────────────────────────────
+  'Arm circles – 1 min':                          3,
+  'Bodyweight squats – 2×12':                     8,
+  'Light push-ups – 2×8':                         5,
+
+  // ── Monday · Shoulders ──────────────────────────────────────
+  'Shoulder press – 3×10':                       10,
+  'Lateral raises – 3×12':                        7,
+  'Reverse fly – 3×12':                           7,
+  'Bicep curls – 3×10':                           7,
+
+  // ── Tuesday · Legs ──────────────────────────────────────────
+  'Squats – 4×10':                               14,
+  'Lunges – 3×12 each':                          11,
+  'Romanian deadlifts – 3×10':                   12,
+  'Calf raises – 3×15':                           5,
+
+  // ── Wednesday · Back ────────────────────────────────────────
+  'Chin-ups – 3×8':                              12,
+  'Dumbbell rows – 3×10':                         9,
+  'Face pulls – 3×15':                            6,
+  'Hammer curls – 3×12':                          7,
+
+  // ── Thursday · Arms ─────────────────────────────────────────
+  'Dumbbell curls – 3×10':                        7,
+  'Skull crushers – 3×10':                        8,
+  'Overhead dumbbell extensions – 3×12':          8,
+  'Hammer curls – 3×12 (arms)':                   7,
+  'Wrist curls – 3×15':                           3,
+  'Leg raises – 3×15':                            8,
+
+  // ── Friday · Chest ──────────────────────────────────────────
+  'Bench press – 4×8':                           13,
+  'Incline press – 3×10':                        11,
+  'Push-ups – 3×max':                             9,
+  'Overhead dumbbell extensions – 3×12 (chest)':  8,
+  'TRX push-up crunch superset with rows – 3×10': 14,
+
+  // ── Rests ───────────────────────────────────────────────────
+  'Rest 30 sec':                                   0,
+  'Rest 45 sec':                                   0,
+  'Rest 60 sec':                                   0,
 };
 
 function getCal(exerciseName) {
@@ -40,8 +55,8 @@ function getCal(exerciseName) {
 ══════════════════════════════════════════════════════════════ */
 const WARM_UP_EXERCISES = [
   'Arm circles – 1 min',
-  'Bodyweight squats – 2 × 12',
-  'Light push-ups – 2 × 8',
+  'Bodyweight squats – 2×12',
+  'Light push-ups – 2×8',
 ];
 
 /* ══════════════════════════════════════════════════════════════
@@ -50,54 +65,107 @@ const WARM_UP_EXERCISES = [
 const WORKOUTS = [
   {
     id: 'monday', day: 'Monday',
-    subtitle: 'Light Strength · Jiu-Jitsu Day', time: '6:00–6:30 PM',
+    subtitle: 'Shoulders · Size Day', time: '6:00–6:30 PM',
     sections: [
       { id: 'mon-wu',   title: 'Warm-up',          dur: '5 min',  rounds: 1,
         exercises: WARM_UP_EXERCISES },
-      { id: 'mon-circ', title: 'Strength Circuit',  dur: '20 min', rounds: 4,
-        exercises: ['Pull-ups – 5–8', 'Dumbbell curls – 10–12', 'Push-ups – 10', 'Plank – 40 sec', 'Rest 45 sec'] },
+      { id: 'mon-main', title: 'Shoulder Circuit',  dur: '20 min', rounds: 1,
+        exercises: [
+          'Shoulder press – 3×10',
+          'Lateral raises – 3×12',
+          'Reverse fly – 3×12',
+          'Rest 60 sec',
+        ] },
       { id: 'mon-fin',  title: 'Finisher',          dur: '5 min',  rounds: 1,
-        exercises: ['Wall sit – 3 × 45 sec'] }
-    ]
+        exercises: [
+          'Bicep curls – 3×10',
+        ] },
+    ],
   },
+
   {
     id: 'tuesday', day: 'Tuesday',
-    subtitle: 'Upper Body Size · Key Day', time: '6:00–6:30 PM',
+    subtitle: 'Legs · Power Day', time: '6:00–6:35 PM',
     sections: [
-      { id: 'tue-wu',  title: 'Warm-up',   dur: '5 min',  rounds: 1,
+      { id: 'tue-wu',   title: 'Warm-up',      dur: '5 min',  rounds: 1,
         exercises: WARM_UP_EXERCISES },
-      { id: 'tue-a',   title: 'Block A',   dur: '10 min', rounds: 2,
-        exercises: ['Pull-ups – 6–10', 'Dumbbell floor press – 10–12', 'Rest 40 sec'] },
-      { id: 'tue-b',   title: 'Block B',   dur: '10 min', rounds: 2,
-        exercises: ['Bicep curls – 10–12', 'Pike push-ups – 8–10', 'Rest 40 sec'] },
-      { id: 'tue-fin', title: 'Finisher',  dur: '5 min',  rounds: 1,
-        exercises: ['Slow push-ups – max reps × 2 sets'] }
-    ]
+      { id: 'tue-main', title: 'Leg Circuit',   dur: '22 min', rounds: 1,
+        exercises: [
+          'Squats – 4×10',
+          'Lunges – 3×12 each',
+          'Romanian deadlifts – 3×10',
+          'Rest 60 sec',
+        ] },
+      { id: 'tue-fin',  title: 'Finisher',      dur: '5 min',  rounds: 1,
+        exercises: [
+          'Calf raises – 3×15',
+        ] },
+    ],
   },
+
   {
     id: 'wednesday', day: 'Wednesday',
-    subtitle: 'Light Recovery Strength', time: '6:00–6:30 PM',
+    subtitle: 'Back · Pull Day', time: '6:00–6:30 PM',
     sections: [
-      { id: 'wed-wu',   title: 'Warm-up',       dur: '5 min',  rounds: 1,
+      { id: 'wed-wu',   title: 'Warm-up',      dur: '5 min',  rounds: 1,
         exercises: WARM_UP_EXERCISES },
-      { id: 'wed-circ', title: 'Main Circuit',   dur: '20 min', rounds: 4,
-        exercises: ['Goblet squats – 12', 'Knee push-ups – 12', 'Hanging knee raises – 12–15', 'Side plank – 30 sec each side', 'Rest 40 sec'] },
-      { id: 'wed-fin',  title: 'Finisher',       dur: '5 min',  rounds: 1,
-        exercises: ['Dead hang from pull-up bar – 3 × 30 sec'] }
-    ]
+      { id: 'wed-main', title: 'Back Circuit',  dur: '20 min', rounds: 1,
+        exercises: [
+          'Chin-ups – 3×8',
+          'Dumbbell rows – 3×10',
+          'Face pulls – 3×15',
+          'Rest 45 sec',
+        ] },
+      { id: 'wed-fin',  title: 'Finisher',      dur: '5 min',  rounds: 1,
+        exercises: [
+          'Hammer curls – 3×12',
+        ] },
+    ],
   },
+
   {
     id: 'thursday', day: 'Thursday',
-    subtitle: 'Heavy Muscle Builder', time: '6:00–6:30 PM',
+    subtitle: 'Arms · Isolation Day', time: '6:00–6:30 PM',
     sections: [
-      { id: 'thu-wu',   title: 'Warm-up',               dur: '5 min',  rounds: 1,
+      { id: 'thu-wu', title: 'Warm-up',                    dur: '5 min',  rounds: 1,
         exercises: WARM_UP_EXERCISES },
-      { id: 'thu-circ', title: 'Main Strength Circuit',  dur: '20 min', rounds: 5,
-        exercises: ['Pull-ups – 6–10', 'Goblet squats – 15', 'Dumbbell shoulder press – 10–12', 'Hanging leg raises – 12–15', 'Rest 30 sec'] },
-      { id: 'thu-fin',  title: 'Finisher',               dur: '5 min',  rounds: 1,
-        exercises: ['Bicep curls burnout set', 'Immediately → push-ups max', 'Repeat once'] }
-    ]
-  }
+      { id: 'thu-a',  title: 'Block A – Biceps & Triceps', dur: '12 min', rounds: 1,
+        exercises: [
+          'Dumbbell curls – 3×10',
+          'Skull crushers – 3×10',
+          'Overhead dumbbell extensions – 3×12',
+          'Rest 45 sec',
+        ] },
+      { id: 'thu-b',  title: 'Block B – Forearms & Core',  dur: '10 min', rounds: 1,
+        exercises: [
+          'Hammer curls – 3×12 (arms)',
+          'Wrist curls – 3×15',
+          'Leg raises – 3×15',
+          'Rest 30 sec',
+        ] },
+    ],
+  },
+
+  {
+    id: 'friday', day: 'Friday',
+    subtitle: 'Chest · Push Day', time: '6:00–6:35 PM',
+    sections: [
+      { id: 'fri-wu',   title: 'Warm-up',       dur: '5 min',  rounds: 1,
+        exercises: WARM_UP_EXERCISES },
+      { id: 'fri-main', title: 'Chest Circuit',  dur: '20 min', rounds: 1,
+        exercises: [
+          'Bench press – 4×8',
+          'Incline press – 3×10',
+          'Push-ups – 3×max',
+          'Rest 60 sec',
+        ] },
+      { id: 'fri-fin',  title: 'Finisher',       dur: '5 min',  rounds: 1,
+        exercises: [
+          'Overhead dumbbell extensions – 3×12 (chest)',
+          'TRX push-up crunch superset with rows – 3×10',
+        ] },
+    ],
+  },
 ];
 
 /* ══════════════════════════════════════════════════════════════
