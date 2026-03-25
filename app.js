@@ -27,7 +27,7 @@ const CALS = {
 
   // ── Thursday · Arms ─────────────────────────────────────────
   'Dumbbell curls – 3×10':                        7,
-  'Skull crushers – 3×10':                        8,
+  'Close grip dumbbell press – 3×10':              8,
   'Overhead dumbbell extensions – 3×12':          8,
   'Hammer curls – 3×12 (arms)':                   7,
   'Wrist curls – 3×15':                           3,
@@ -132,7 +132,7 @@ const WORKOUTS = [
       { id: 'thu-a',  title: 'Block A – Biceps & Triceps', dur: '12 min', rounds: 1,
         exercises: [
           'Dumbbell curls – 3×10',
-          'Skull crushers – 3×10',
+          'Close grip dumbbell press – 3×10',
           'Overhead dumbbell extensions – 3×12',
           'Rest 45 sec',
         ] },
