@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Workout Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="workout.css">
+</head>
+<body>
+  <div id="achievement-toast" class="achievement-toast">
+    <span class="achievement-toast-icon"></span>
+    <span class="achievement-toast-text"></span>
+  </div>
+  <div id="achievement-overlay" class="achievement-overlay">
+    <div class="achievement-icon-wrapper">
+      <img id="achievement-icon-img" src="" alt="">
+    </div>
+    <div class="achievement-name" id="achievement-name-text"></div>
+    <div class="achievement-quote" id="achievement-quote-text">"This is just the beginning"</div>
+  </div>
+  <div id="week-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div id="modal-inner"></div>
+    </div>
+  </div>
+  <div id="reset-modal-1" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content reset-modal-content">
+      <div class="reset-warning-icon">⚠️</div>
+      <h3 class="reset-title">Reset All Data?</h3>
+      <p class="reset-message">This will reset your current week to Week 1 and clear ALL workout data. This action cannot be undone.</p>
+      <div class="reset-actions">
+        <button id="reset-no-1" class="btn-reset-no">No, Cancel</button>
+        <button id="reset-yes-1" class="btn-reset-yes">Yes, I'm Sure</button>
+      </div>
+    </div>
+  </div>
+  <div id="reset-modal-2" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content reset-modal-content">
+      <div class="reset-warning-icon">⚠️</div>
+      <h3 class="reset-title">Final Confirmation</h3>
+      <p class="reset-message">To complete the reset, type "Reset" below:</p>
+      <div class="reset-input-group">
+        <input type="text" id="reset-confirm-input" class="reset-input" placeholder="Reset" autocomplete="off">
+      </div>
+      <div class="reset-actions">
+        <button id="reset-no-2" class="btn-reset-no">Cancel</button>
+        <button id="reset-yes-2" class="btn-reset-yes" disabled>Confirm Reset</button>
+      </div>
+    </div>
+  </div>
+  <div id="api-key-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content api-key-modal-content">
+      <h3 class="api-key-title">OpenAI API Key</h3>
+      <p class="api-key-message">Enter your OpenAI API key to enable AI food recommendations. Your key is stored locally and never sent to any server.</p>
+      <div class="api-key-input-group">
+        <input type="password" id="api-key-input" class="api-key-input" placeholder="sk-..." autocomplete="off">
+      </div>
+      <p class="api-key-note">Get your key at <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com</a></p>
+      <div class="api-key-actions">
+        <button id="api-key-save" class="btn-api-key-save">Save Key</button>
+        <button id="api-key-skip" class="btn-api-key-skip">Skip for Now</button>
+      </div>
+    </div>
+  </div>
+  <div id="timer-bar" class="timer-bar hidden">
+    <div class="timer-inner">
+      <div class="timer-left">
+        <div class="timer-pulse"></div>
+        <span id="timer-day-label"></span>
+      </div>
+      <span id="timer-display">00:00</span>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <header>
+      <span class="wordmark">Workout</span>
+      <span id="today-label" class="today-label"></span>
+    </header>
+
+    <main id="app-panels" class="app-panels">
+      <section id="workout-panel" class="tab-panel is-active" data-panel="workout" aria-label="Workout tab">
+        <div id="days-container"></div>
+        <section id="week-summary" class="week-summary hidden"></section>
+      </section>
+
+      <section id="food-panel" class="tab-panel" data-panel="food" aria-label="Food tab">
+        <div class="food-container">
+          <button id="generate-recommendations-btn" class="generate-recommendations-btn">
+            Generate Recommendations
+          </button>
+          <div id="recommendations-area" class="recommendations-area">
+            <div class="recommendations-empty">Empty</div>
+          </div>
+          <div class="tools-section">
+            <h3 class="tools-subheader">Tools</h3>
+            <div class="tools-grid">
+              <button id="bmi-btn" class="tool-button" aria-label="BMI Calculator">
+                <img src="icons/BMI.svg" alt="BMI" class="tool-icon-img">
+              </button>
+              <button id="water-btn" class="tool-button" aria-label="Water Tracker">
+                <img src="icons/water%20tracker.svg" alt="Water" class="tool-icon-img">
+              </button>
+              <button id="food-btn" class="tool-button" aria-label="Food Logger">
+                <img src="icons/Food.svg" alt="Food" class="tool-icon-img">
+              </button>
+              <button id="protein-btn" class="tool-button" aria-label="Protein Calculator">
+                <img src="icons/protein.svg" alt="Protein" class="tool-icon-img">
+              </button>
+              <button id="calorie-btn" class="tool-button" aria-label="Calorie Estimator">
+                <img src="icons/calorie%20estimate.svg" alt="Calories" class="tool-icon-img">
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="bmi-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content bmi-modal-content">
+          <h3 class="bmi-title">BMI Calculator</h3>
+          <div class="bmi-inputs">
+            <div class="bmi-input-group">
+              <label for="bmi-height">Height (cm)</label>
+              <input type="number" id="bmi-height" class="bmi-input" placeholder="175" min="50" max="300">
+            </div>
+            <div class="bmi-input-group">
+              <input type="number" id="bmi-weight" class="bmi-input" placeholder="70" min="20" max="300">
+            </div>
+          </div>
+          <div id="bmi-result" class="bmi-result hidden">
+            <div class="bmi-chart-container">
+              <canvas id="bmi-gauge-chart"></canvas>
+              <div class="bmi-chart-value">
+                <span id="bmi-chart-number">--</span>
+                <span class="bmi-chart-label">BMI</span>
+              </div>
+            </div>
+            <div class="bmi-category" id="bmi-category">--</div>
+          </div>
+          <div class="bmi-actions">
+            <button id="bmi-close" class="btn-bmi-close">Close</button>
+            <button id="bmi-calculate" class="btn-bmi-calculate">Calculate</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="water-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content tool-modal-content">
+          <h3 class="tool-title">Water Tracker</h3>
+          <div class="water-display">
+            <div class="water-amount" id="water-amount">0 ml</div>
+            <div class="water-status" id="water-status">Start drinking!</div>
+            <div class="water-bar">
+              <div class="water-fill" id="water-fill" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="water-controls">
+            <button id="water-minus" class="water-btn water-minus">−</button>
+            <button id="water-plus" class="water-btn water-plus">+</button>
+          </div>
+          <div class="water-note">500ml per click • Goal: 2000ml</div>
+          <div class="tool-actions">
+            <button id="water-close" class="btn-tool-close">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="protein-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content tool-modal-content">
+          <h3 class="tool-title">Protein Calculator</h3>
+          <p class="tool-subtitle">Based on active lifestyle (2.0g/kg)</p>
+          <div class="tool-inputs">
+            <div class="tool-input-group">
+              <label for="protein-weight">Weight (kg)</label>
+              <input type="number" id="protein-weight" class="tool-input" placeholder="70" min="20" max="300">
+            </div>
+          </div>
+          <div id="protein-result" class="tool-result hidden">
+            <div class="tool-value" id="protein-value">--</div>
+            <div class="tool-unit">grams per day</div>
+          </div>
+          <div class="tool-actions">
+            <button id="protein-close" class="btn-tool-close">Close</button>
+            <button id="protein-calculate" class="btn-tool-calculate">Calculate</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="calorie-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content tool-modal-content">
+          <h3 class="tool-title">Calorie Estimator</h3>
+          <p class="tool-subtitle">Based on active lifestyle</p>
+          <div class="tool-inputs">
+            <div class="tool-input-group">
+              <label for="calorie-weight">Weight (kg)</label>
+              <input type="number" id="calorie-weight" class="tool-input" placeholder="70" min="20" max="300">
+            </div>
+          </div>
+          <div id="calorie-result" class="tool-result hidden">
+            <div class="tool-value" id="calorie-value">--</div>
+            <div class="tool-unit">calories per day</div>
+          </div>
+          <div class="tool-actions">
+            <button id="calorie-close" class="btn-tool-close">Close</button>
+            <button id="calorie-calculate" class="btn-tool-calculate">Calculate</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="food-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content tool-modal-content">
+          <h3 class="tool-title">Food Logger</h3>
+          <div class="food-display">
+            <div class="food-amount" id="food-amount">0 cal</div>
+            <div class="food-status" id="food-status">Log your meals!</div>
+          </div>
+          <div class="food-suggestion-chips">
+            <button class="food-chip" data-calories="100">100</button>
+            <button class="food-chip" data-calories="200">200</button>
+            <button class="food-chip" data-calories="500">500</button>
+          </div>
+          <div class="water-controls">
+            <button id="food-minus" class="water-btn water-minus">−</button>
+            <button id="food-plus" class="water-btn water-plus">+</button>
+          </div>
+          <div class="food-note">Quick add or use +/- • Click chips for instant add</div>
+          <div class="tool-actions">
+            <button id="food-close" class="btn-tool-close">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <section id="statistics-panel" class="tab-panel" data-panel="statistics" aria-label="Statistics tab">
+        <div id="stats-container" class="stats-container">
+          <div id="bmi-history-container"></div>
+        </div>
+      </section>
+            <section id="achievements-panel" class="tab-panel" data-panel="achievements" aria-label="Achievements tab">
+        <div id="achievements-container" class="achievements-container"></div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="bottom-tabs" aria-label="Primary">
+    <button class="tab-button is-active" data-tab="workout" aria-controls="workout-panel" aria-selected="true" type="button">
+      <img src="icons/Workout.svg" alt="" aria-hidden="true">
+      <span>Workout</span>
+    </button>
+    <button class="tab-button" data-tab="food" aria-controls="food-panel" aria-selected="false" type="button">
+      <img src="icons/Food.svg" alt="" aria-hidden="true">
+      <span>Food</span>
+    </button>
+    <button class="tab-button" data-tab="statistics" aria-controls="statistics-panel" aria-selected="false" type="button">
+      <img src="icons/Statistics.svg" alt="" aria-hidden="true">
+      <span>Statistics</span>
+    </button>
+    <button class="tab-button" data-tab="achievements" aria-controls="achievements-panel" aria-selected="false" type="button">
+      <img src="icons/Achievements.svg" alt="" aria-hidden="true">
+      <span>Achievements</span>
+    </button>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+  <script src="achievements.js"></script>
+  <script src="food.js"></script>
+  <script src="tools.js"></script>
+  <script src="statistics.js"></script>
+  <script src="workout.js"></script>
+</body>
+</html>
